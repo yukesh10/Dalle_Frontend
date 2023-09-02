@@ -6,13 +6,15 @@ pipeline {
         checkout scm
       }
     }
+
     stage('Client Tests') {
-    	steps {
-    		dir('client') {
-    			sh 'npm install'
-    			sh 'npm test'
-    		}
-    	}
+      steps {
+        dir(path: 'client') {
+          sh 'npm install'
+          sh 'npm test'
+        }
+
+      }
     }
 
   }
