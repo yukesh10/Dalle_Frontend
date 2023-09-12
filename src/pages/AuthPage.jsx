@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 
 import { FormField } from "../components";
-import {API_BASE_URL} from "../constants/serverConfig";
 import { useNavigate } from "react-router-dom";
 
 import {defaultFormData} from '../models/User';
@@ -27,7 +26,7 @@ function AuthPage({ isLogin }) {
 
       if (loginPage) {
         const response = await fetch(
-          `${API_BASE_URL}/v1/auth/login`,
+          `api/v1/auth/login`,
           {
             method: "POST",
             headers: {
@@ -47,7 +46,7 @@ function AuthPage({ isLogin }) {
         }
       } else {
         const response = await fetch(
-          `${API_BASE_URL}/v1/auth/signup`,
+          `api/v1/auth/signup`,
           {
             method: "POST",
             headers: {
