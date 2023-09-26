@@ -20,15 +20,10 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-      with:
-        path: /home/ubuntu/dalle_clone/Dalle_Frontend
-        
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-      working-directory: /home/ubuntu/dalle_clone/Dalle_Frontend
     - run: npm run build:production
-      working-directory: /home/ubuntu/dalle_clone/Dalle_Frontend
