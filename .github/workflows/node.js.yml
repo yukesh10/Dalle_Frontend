@@ -6,9 +6,6 @@ name: Node.js CI
 on:
   push:
     branches: [ "main" ]
-defaults:
- run:
-  working-directory: /home/ubuntu/dalle_clone/Dalle_Frontend
 
 jobs:
   build:
@@ -21,7 +18,11 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        path: /home/ubuntu/dalle_clone/Dalle_Frontend
+        
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
