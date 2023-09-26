@@ -6,6 +6,9 @@ name: Node.js CI
 on:
   push:
     branches: [ "main" ]
+defaults:
+ run:
+  working-directory: /home/ubuntu/dalle_clone/Dalle_Frontend
 
 jobs:
   build:
