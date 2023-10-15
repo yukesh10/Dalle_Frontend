@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import {defaultFormData} from '../models/User';
 import { useAuth } from "../hooks/useAuth";
 
+import api from "../interceptors/interceptor";
+
 function AuthPage({ isLogin }) {
   const navigate = useNavigate();
   const { login, logout} = useAuth();
@@ -25,44 +27,25 @@ function AuthPage({ isLogin }) {
       setLoading(true);
 
       if (loginPage) {
-        const response = await fetch(
-          `api/v1/auth/login`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({email: formData.email, password: formData.password}),
-          }
-        );
+        const response = await api.post('/v1/auth/login', {email: formData.email, password: formData.password});
 
-        const responseJson = await response.json();
-        if (responseJson.success) {
-          login({id: responseJson.id, name: responseJson.name, email: responseJson.email, authToken: responseJson.token})
+        const result = response.data;
+        if (result.success) {
+          login(result);
           navigate("/");
         } else {
-
-          toast.error(responseJson.message);
+          toast.error(result.message);
         }
       } else {
-        const response = await fetch(
-          `api/v1/auth/signup`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-          }
-        );
+        const response = await api.post('/v1/auth/signup', {formData});
 
-        const responseJson = await response.json();
-        if (responseJson.success) {
-          toast.success(responseJson.message, {autoClose: 1000});
+        const result = response.data;
+        if (result.success) {
+          toast.success(result.message, {autoClose: 1000});
           setFormData(defaultFormData);
           setLoginPage(true);
         } else {
-          toast.error(responseJson.message);
+          toast.error(result.message);
         }
       }
     } catch (error) {

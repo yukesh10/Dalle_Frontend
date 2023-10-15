@@ -1,5 +1,7 @@
 import React, {useContext, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../interceptors/interceptor';
+import { toast } from "react-toastify";
 
 import { preview } from '../assets';
 import { getRandomPrompt} from '../utils';
@@ -23,16 +25,9 @@ const CreatePost = () => {
         if (form.prompt){
             try {
                 setGeneratingImg(true);
-                const response = await fetch(`api/v1/dalle`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${user?.authToken}`
-                    },
-                    body: JSON.stringify({prompt: form.prompt})
-                })
+                const response = await api.post('/v1/dalle', {prompt: form.prompt})
 
-                const data = await response.json();
+                const data = response.data;
                 setForm({...form, photo: `data:image/jpeg;base64,${data.photo}`})
             } catch(error){
                 alert(error);
@@ -50,17 +45,15 @@ const CreatePost = () => {
         if (form.prompt && form.photo){
             setLoading(true);
             try {
-                const response = await fetch(`api/v1/post`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${user?.authToken}`
-                    },
-                    body: JSON.stringify(form)
-                })
+                const response = await api.post('/v1/post', form)
 
-                await response.json();
-                navigate('/');
+                const result = response.data;
+                if (result.success){
+                    toast.success(result.message, {autoClose: 1000});
+                    navigate('/');
+                } else {
+                    toast.error(result.message);
+                }
             } catch(error){
                 alert(error);
             } finally {

@@ -1,4 +1,5 @@
 import React, {useState, useEffect } from 'react';
+import api from '../interceptors/interceptor';
 
 import { Loader, Card, FormField } from '../components';
 
@@ -27,17 +28,10 @@ const Home = () => {
             setLoading(true);
 
             try {
-                const response = await fetch(`api/v1/post`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-
-                if (response.ok){
-                    const result = await response.json();
-
-                    setAllPosts(result.data.reverse());
+                const response = await api.get('/v1/post');
+                if (response?.data?.success){
+                    const result = response?.data?.data;
+                    setAllPosts(result.reverse());
                 }
             } catch(error){
                 alert(error);
