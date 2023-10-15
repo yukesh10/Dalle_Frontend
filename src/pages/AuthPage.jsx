@@ -37,7 +37,7 @@ function AuthPage({ isLogin }) {
           toast.error(result.message);
         }
       } else {
-        const response = await api.post('/v1/auth/signup', {formData});
+        const response = await api.post('/v1/auth/signup', formData);
 
         const result = response.data;
         if (result.success) {
