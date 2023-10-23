@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { BrowserRouter, Link, Route, Routes, Navigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { AuthContext } from "./context/AuthContext";
@@ -8,11 +8,14 @@ import { logo } from "./assets";
 import { Home, CreatePost, AuthPage } from "./pages";
 import { useAuth } from "./hooks/useAuth";
 
+import api from "./interceptors/interceptor";
+
 const App = () => {
   const { user } = useContext(AuthContext);
   const {logout} = useAuth();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    api.post('/v1/auth/logout', {userId: user?.id});
     logout();
   }
 

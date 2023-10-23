@@ -11,7 +11,7 @@ import api from "../interceptors/interceptor";
 
 function AuthPage({ isLogin }) {
   const navigate = useNavigate();
-  const { login, logout} = useAuth();
+  const { login} = useAuth();
   const [loginPage, setLoginPage] = useState(isLogin);
   const [loading, setLoading] = useState(false);
 
@@ -49,7 +49,7 @@ function AuthPage({ isLogin }) {
         }
       }
     } catch (error) {
-      alert(error);
+      toast.error(error?.message);
     } finally {
       setLoading(false);
     }

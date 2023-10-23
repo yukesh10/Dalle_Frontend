@@ -16,8 +16,8 @@ export const useAuth = () => {
     }, []);
 
     const login = (response) => {
-        const {id, email, name, token, refresh} = response;
-        addUser({id, email, name});
+        const {id, email, name, maxPost, currentPost, token, refresh} = response;
+        addUser({id, email, name, currentPost, maxPost});
         addToken({token, refresh});
     }
 

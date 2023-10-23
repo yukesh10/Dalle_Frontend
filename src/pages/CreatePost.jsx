@@ -8,6 +8,7 @@ import { getRandomPrompt} from '../utils';
 import { FormField, Loader } from '../components';
 
 import { AuthContext } from '../context/AuthContext';
+import {useUser} from '../hooks/useUser'; 
 
 const CreatePost = () => {
 
@@ -20,6 +21,7 @@ const CreatePost = () => {
     });
     const [generatingImg, setGeneratingImg] = useState(false);
     const [loading, setLoading] = useState(false);
+    const {addUser} = useUser();
 
     const generateImage = async () => {
         if (form.prompt){
@@ -30,12 +32,12 @@ const CreatePost = () => {
                 const data = response.data;
                 setForm({...form, photo: `data:image/jpeg;base64,${data.photo}`})
             } catch(error){
-                alert(error);
+                toast.error(error?.message);
             } finally {
                 setGeneratingImg(false);
             }
         } else {
-            alert('Please enter a prompt');
+            toast.error('Please enter a prompt');
         }
     }
 
@@ -49,18 +51,19 @@ const CreatePost = () => {
 
                 const result = response.data;
                 if (result.success){
+                    addUser({currentPost: result?.data?.currentPost, user});
                     toast.success(result.message, {autoClose: 1000});
                     navigate('/');
                 } else {
                     toast.error(result.message);
                 }
             } catch(error){
-                alert(error);
+                toast.error(error?.message);
             } finally {
                 setLoading(false);
             }
         } else {
-            alert('Please enter a prompt and generate the image')
+            toast.error('Please enter a prompt and generate the image')
         }
     }
 
@@ -81,6 +84,9 @@ const CreatePost = () => {
             </h1>
             <p className='mt-2 text-[#666e75] text-[14px] max-w-[500px]'>
                 Create imaginative and visually stunning images through DALL-E AI and share them with the community
+            </p>
+            <p className='mt-2 text-green-500 text-[14px] max-w-[500px] font-bold'>
+                You have used {user?.currentPost || 0} of {user?.maxPost || 0} posts.
             </p>
         </div>
         <form className='mt-16 max-w-3xl' onSubmit={handleSubmit}>
@@ -125,6 +131,7 @@ const CreatePost = () => {
                     type='button'
                     onClick={generateImage}
                     className='text-white bg-green-700 font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center'
+                    disabled={user?.currentPost >= user?.maxPost || form?.prompt?.length === 0}
                 >
                     {generatingImg ? 'Generating...' : 'Generate'}
                 </button>

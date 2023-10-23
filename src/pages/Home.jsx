@@ -3,6 +3,8 @@ import api from '../interceptors/interceptor';
 
 import { Loader, Card, FormField } from '../components';
 
+import { toast } from 'react-toastify';
+
 const RenderCards = ({data, title}) => {
     if (data?.length > 0) 
         return data.map((post) => <Card key={post._id} {...post} />)
@@ -34,7 +36,7 @@ const Home = () => {
                     setAllPosts(result.reverse());
                 }
             } catch(error){
-                alert(error);
+                toast.error(error?.message);
             } finally {
                 setLoading(false);
             }

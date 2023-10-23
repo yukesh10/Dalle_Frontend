@@ -20,7 +20,7 @@ api.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
-        if (error.response.status === 401 && !originalRequest._retry) {
+        if (error.response.status === 401 && error.response.error === "TOKEN_EXPIRED" && !originalRequest._retry) {
             originalRequest._retry = true;
 
             try {
@@ -36,7 +36,9 @@ api.interceptors.response.use(
             } catch (error) {
                 // Handle refresh token error or redirect to login
             }
-        }
+        } else if (error?.response?.data){
+            return Promise.resolve(error.response);
+        } 
 
         return Promise.reject(error);
     }
