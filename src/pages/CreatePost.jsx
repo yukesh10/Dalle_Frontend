@@ -12,7 +12,7 @@ import {useUser} from '../hooks/useUser';
 
 const CreatePost = () => {
 
-    const {user} = useContext(AuthContext);
+    let {user} = useContext(AuthContext);
 
     const navigate = useNavigate();
     const [form, setForm] = useState({
@@ -51,7 +51,8 @@ const CreatePost = () => {
 
                 const result = response.data;
                 if (result.success){
-                    addUser({currentPost: result?.data?.currentPost, user});
+                    user.currentPost = result?.data?.currentPost;
+                    addUser(user);
                     toast.success(result.message, {autoClose: 1000});
                     navigate('/');
                 } else {
