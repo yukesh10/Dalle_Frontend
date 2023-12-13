@@ -113,3 +113,7 @@ export const surpriseMePrompts = [
   "A bustling city square with towering skyscrapers.",
   "A serene forest clearing with sunlight streaming through the trees."
 ];
+
+export const USER_DALLE = "user_dalle";
+export const ACCESS_TOKEN = "access_token";
+export const REFRESH_TOKEN = "refresh_token";

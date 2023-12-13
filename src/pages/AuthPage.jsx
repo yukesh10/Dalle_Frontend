@@ -1,57 +1,61 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
 import { FormField } from "../components";
 import { useNavigate } from "react-router-dom";
 
 import {defaultFormData} from '../models/User';
-import { useAuth } from "../hooks/useAuth";
 
-import api from "../interceptors/interceptor";
+import { loginUser, signupUser } from "../store/actions/authActions";
+import { useDispatch, useSelector } from "react-redux";
 
 function AuthPage({ isLogin }) {
   const navigate = useNavigate();
-  const { login} = useAuth();
   const [loginPage, setLoginPage] = useState(isLogin);
-  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState(defaultFormData);
+
+  const dispatch = useDispatch();
+  const isLoadingLogin = useSelector(state => state.login.isLoading);
+  const isLoggedIn = useSelector(state => state.login.isLoggedIn);
+  const errorLogin = useSelector(state => state.login.error);
+  const messageLogin = useSelector(state => state.login.message);
+
+  const isLoadingSignup = useSelector(state => state.signup.isLoading);
+  const successSignup = useSelector(state => state.login.success);
+  const errorSignup = useSelector(state => state.login.error);
+  const messageSignup = useSelector(state => state.login.message);
+  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  useEffect(() => {
+    if (errorLogin){
+      toast.error(errorLogin);
+    }
+    if (isLoggedIn){
+      navigate('/');
+      toast.success(messageLogin);
+    }
+  }, [isLoggedIn, errorLogin])
+
+  useEffect(() => {
+    if (errorSignup){
+      toast.error(errorSignup)
+    }
+
+    if (successSignup){
+      setLoginPage(true);
+      toast.success(messageSignup);
+    }
+  }, [successSignup, errorSignup])
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      setLoading(true);
-
-      if (loginPage) {
-        const response = await api.post('/v1/auth/login', {email: formData.email, password: formData.password});
-
-        const result = response.data;
-        if (result.success) {
-          login(result);
-          navigate("/");
-        } else {
-          toast.error(result.message);
-        }
-      } else {
-        const response = await api.post('/v1/auth/signup', formData);
-
-        const result = response.data;
-        if (result.success) {
-          toast.success(result.message, {autoClose: 1000});
-          setFormData(defaultFormData);
-          setLoginPage(true);
-        } else {
-          toast.error(result.message);
-        }
-      }
-    } catch (error) {
-      toast.error(error?.message);
-    } finally {
-      setLoading(false);
+    if (loginPage) {
+      dispatch(loginUser(formData));
     }
   };
 
@@ -99,7 +103,7 @@ function AuthPage({ isLogin }) {
                 type="submit"
                 className="mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
               >
-                {loading ? (loginPage ? 'Logging In...': 'Signing up...') : (loginPage ? 'Login': 'Signup')}
+                {(loginPage ? isLoadingLogin ? 'Logging In...': 'Login' : isLoadingSignup ? 'Signing up...': 'Signup')}
               </button>
               {loginPage ? (
                 <p className="mt-2 text-[#666e75] text-[14px] text-center">

@@ -1,40 +1,40 @@
-import React, { useContext, useState } from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Link, Route, Routes, Navigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import { AuthContext } from "./context/AuthContext";
 import { logo } from "./assets";
 import { Home, CreatePost, AuthPage } from "./pages";
-import { useAuth } from "./hooks/useAuth";
 
-import api from "./interceptors/interceptor";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "./store/actions/authActions";
+import { actions } from "./store/slice/login-slice";
 
 const App = () => {
-  const { user } = useContext(AuthContext);
-  const {logout} = useAuth();
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.login.user);
+
+  useEffect(()=> {
+    if (!user || !user.id){
+      dispatch(actions.checkLogin());
+    }
+  }, [])
 
   const handleLogout = async () => {
-    api.post('/v1/auth/logout', {userId: user?.id});
-    logout();
+    dispatch(logoutUser(user?.id));
+    dispatch(actions.resetLoginState());
   }
 
   return (
     <BrowserRouter>
       <ToastContainer />
-      <header className="w-full flex justify-between items-center bg-white sm:px-8 px-4 py-4 border-b border-b-[#e6ebf4] sticky top-0">
+      <header className="w-full flex justify-between items-center bg-white sm:px-8 px-4 py-4 border-b border-b-[#e6ebf4] sticky top-0 z-40">
         <Link to="/">
-          <img src={logo} alt="logo" className="w-28 object-contain" />
+          <img src={logo} alt="logo" className="w-24 object-contain" />
         </Link>
         <div className="">
           {user?.id && (
             <>
-              <Link
-                to="/create-post"
-                className="font-inter font-medium bg-[#6469ff] text-white px-4 py-2 rounded-md mx-2"
-              >
-                Create
-              </Link>
               <button
                 className="font-inter font-medium bg-[#b32626b9] text-white px-4 py-2 rounded-md"
                 onClick={handleLogout}
@@ -67,7 +67,7 @@ const App = () => {
             }
           />
           <Route path="/" element={<Home />} />
-          <Route path="/create-post" element={user?.id ? <CreatePost /> : <Navigate to="/auth" replace />} />
+          {/* <Route path="/create-post" element={user?.id ? <CreatePost /> : <Navigate to="/auth" replace />} /> */}
         </Routes>
       </main>
     </BrowserRouter>
