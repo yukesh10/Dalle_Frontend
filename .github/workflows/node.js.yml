@@ -18,10 +18,6 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - name: Set permissions
-      run: sudo chmod -R 755 "${{ runner.workspace }}"
-    - name: Set Ownership
-      run: sudo chown $USER "${{ runner.workspace }}"
     - name: Checkout
       uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
