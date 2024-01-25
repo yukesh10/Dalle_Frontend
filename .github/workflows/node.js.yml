@@ -19,7 +19,7 @@ jobs:
 
     steps:
     - name: Set permissions
-      run: chmod -R 755 "${{ runner.workspace }}"
+      run: sudo chmod -R 755 "${{ runner.workspace }}"
     - name: Set Ownership
       run: sudo chown $USER "${{ runner.workspace }}"
     - name: Checkout
