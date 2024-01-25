@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { toast } from "react-toastify";
 
 import { FormField } from "../components";
 import { useNavigate } from "react-router-dom";
@@ -17,45 +16,30 @@ function AuthPage({ isLogin }) {
 
   const dispatch = useDispatch();
   const isLoadingLogin = useSelector(state => state.login.isLoading);
-  const isLoggedIn = useSelector(state => state.login.isLoggedIn);
-  const errorLogin = useSelector(state => state.login.error);
-  const messageLogin = useSelector(state => state.login.message);
-
   const isLoadingSignup = useSelector(state => state.signup.isLoading);
-  const successSignup = useSelector(state => state.login.success);
-  const errorSignup = useSelector(state => state.login.error);
-  const messageSignup = useSelector(state => state.login.message);
-  
+  const signupSuccess = useSelector(state => state.signup.success);
+  const loginSuccess = useSelector(state => state.login.success);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   useEffect(() => {
-    if (errorLogin){
-      toast.error(errorLogin);
-    }
-    if (isLoggedIn){
-      navigate('/');
-      toast.success(messageLogin);
-    }
-  }, [isLoggedIn, errorLogin])
+    setLoginPage(signupSuccess);
+  }, [signupSuccess]);
 
   useEffect(() => {
-    if (errorSignup){
-      toast.error(errorSignup)
+    if (loginSuccess){
+      navigate("/");
     }
-
-    if (successSignup){
-      setLoginPage(true);
-      toast.success(messageSignup);
-    }
-  }, [successSignup, errorSignup])
+  }, [loginSuccess])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loginPage) {
       dispatch(loginUser(formData));
+    } else {
+      dispatch(signupUser(formData));
     }
   };
 
