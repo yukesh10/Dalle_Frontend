@@ -7,8 +7,9 @@ export default defineConfig({
   server: {
       proxy: {
         '/api': {
-          target: 'http://localhost:8081',
+          target: 'https://dalle-clone-backend-6ade6a452c7f.herokuapp.com',
           changeOrigin: true,
+          secure: false
         },
       },
     },
