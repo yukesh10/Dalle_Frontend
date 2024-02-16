@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "proxy": "https://dalle-clone-backend-6ade6a452c7f.herokuapp.com",
   "scripts": {
     "start": "serve -s dist",
     "dev": "vite",
